@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List, Any
 import uuid
-from corex.core import Event, ComponentBase
+from viol.core import Event, ComponentBase
 
 
 class Button(ComponentBase):

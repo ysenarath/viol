@@ -3,10 +3,10 @@ from flask import request
 from pathlib import Path
 import uuid
 
-from corex import Server
-from corex.core import ComponentList, Event
-from corex.components.button import Button
-from corex.components.navbar import Navbar
+from viol import Server
+from viol.core import ComponentList, Event
+from viol.components.button import Button
+from viol.components.navbar import Navbar
 
 app = Server(__name__)
 

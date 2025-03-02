@@ -1,7 +1,7 @@
-# corex
+# viol
 
-[![PyPI - Version](https://img.shields.io/pypi/v/corex.svg)](https://pypi.org/project/corex)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/corex.svg)](https://pypi.org/project/corex)
+[![PyPI - Version](https://img.shields.io/pypi/v/viol.svg)](https://pypi.org/project/viol)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/viol.svg)](https://pypi.org/project/viol)
 
 ---
 
@@ -13,10 +13,10 @@
 ## Installation
 
 ```console
-pip install corex
+pip install viol
 ```
 
 ## License
 
-`corex` is distributed under the terms of the
+`viol` is distributed under the terms of the
 [MIT](https://spdx.org/licenses/MIT.html) license.

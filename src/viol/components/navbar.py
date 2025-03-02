@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List, Optional
 import uuid
 from jinja2 import Template
-from corex.core import Event, ComponentBase
+from viol.core import Event, ComponentBase
 
 
 class NavItem(ComponentBase):
