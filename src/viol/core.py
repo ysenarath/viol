@@ -19,11 +19,13 @@ __all__ = [
     "ComponentBaseConfig",
     "Element",
     "Event",
-    "FlatList",
     "VoidElement",
+    "concat",
 ]
 
 T = TypeVar("T")
+
+# Protocol for objects that can be rendered
 
 
 @runtime_checkable
@@ -31,11 +33,11 @@ class RenderableI(Protocol):
     def render(self, **ctx: Any) -> str: ...
 
 
-R = RenderableI | str
+R = RenderableI | str | None
 
 
 def is_renderable(obj: Any) -> TypeGuard[R]:
-    return isinstance(obj, (RenderableI, str))
+    return isinstance(obj, (RenderableI, str)) or obj is None
 
 
 def render(r: R, **ctx: Any) -> str:
@@ -46,6 +48,9 @@ def render(r: R, **ctx: Any) -> str:
     if isinstance(r, Iterable) and not isinstance(r, str):
         return "".join(render(c, **ctx) for c in r)
     return render_template_string(r, **ctx)
+
+
+# The following classes are used to create HTML elements and handle events
 
 
 class AttrList(UserList[tuple[str, Any]]):
@@ -63,8 +68,10 @@ class AttrList(UserList[tuple[str, Any]]):
         else:
             self.append(item)
 
-    def to_string(self) -> str:
-        return " ".join([f'{escape(k)}="{escape(str(v))}"' for k, v in self])
+    def to_string(self, **ctx: Any) -> str:
+        return " ".join(
+            [f'{escape(k)}="{escape(str(v).format(**ctx))}"' for k, v in self]
+        )
 
     def __repr__(self) -> str:
         return self.to_string()
@@ -103,10 +110,6 @@ class ComponentBase(abc.ABC):
     def id(self, value: str | None) -> None:
         self._id = escape(value).format(uuid=uuid.uuid4().hex) if value else None
 
-    @abc.abstractmethod
-    def render(self, **ctx: Any) -> str:
-        pass
-
     def render_events(self) -> tuple[str, str]:
         if self.events:
             events = iter(self.events)
@@ -114,6 +117,10 @@ class ComponentBase(abc.ABC):
             event_divs = "".join(e.render() for e in events)
             return event_attr, event_divs
         return "", ""
+
+    @abc.abstractmethod
+    def render(self, **ctx: Any) -> str:
+        pass
 
 
 @dataclass
@@ -199,7 +206,7 @@ class EventList(ValidatedList[Event]):
         return event
 
 
-class FlatList(ValidatedList[R]):
+class concat(ValidatedList[R]):  # noqa: N801
     def __init__(self, data: str | list[Any] | None = None):
         super().__init__()
         if isinstance(data, str):
@@ -242,7 +249,7 @@ class Element(ComponentBase, prefix="hx-{self.tag}-"):
         children = render(self.children, **ctx)
         tag = escape(self.tag)
         attr_id = f'id="{self.id}"' if self.id else ""
-        attrs = self.attrs.to_string()
+        attrs = self.attrs.to_string(**ctx)
         event, other_events = self.render_events()
         return f"<{tag} {attr_id} {attrs} {event}>{children}</{tag}>{other_events}"
 
@@ -260,7 +267,7 @@ class VoidElement(Element):
 
     def render(self, **ctx: Any) -> str:
         tag = escape(self.tag)
-        attrs = self.attrs.to_string()
+        attrs = self.attrs.to_string(**ctx)
         attr_id = f'id="{self.id}"' if self.id else ""
         event, other_events = self.render_events()
         return f"<{tag} {attr_id} {attrs} {event} />{other_events}"

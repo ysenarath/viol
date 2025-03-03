@@ -3,8 +3,8 @@ from __future__ import annotations
 from flask import render_template
 
 from viol import Server
-from viol.core import Element, FlatList
-from viol.elements.button import Button
+from viol.core import concat
+from viol.elements import H1, Button
 
 app = Server(__name__)
 
@@ -52,15 +52,12 @@ def home():
         ],
         id="my-button-{uuid}",
     )
-    h1 = Element(
-        "h1",
-        "Hello!",
+    h1 = H1(
+        "H1 Header (Do not click me)",
         _="on click go to url https://htmx.org",
     )
-    body = FlatList(
+    body = concat(
         [
-            "<h1>Home</h1>",
-            "<p>Welcome to the home page</p>",
             click_btn,
             mouseover_btn,
             "<div id='output'></div>",
