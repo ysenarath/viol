@@ -1,25 +1,29 @@
 from __future__ import annotations
 
-import uuid
-
 from flask import render_template
 
 from viol import Server
-from viol.core import RenderableList
-from viol.html.button import Button
+from viol.core import Element, FlatList
+from viol.elements.button import Button
 
 app = Server(__name__)
 
 
 @app.route("/click", methods=["POST", "GET"])
 def clicked():
-    uid = uuid.uuid4().hex
-    return f"<h1>{uid}</h1>"
+    text = "You clicked the button!"
+    return f"<h1>{text}</h1>"
+
+
+@app.route("/mouseover", methods=["POST", "GET"])
+def mouseover():
+    text = "You hovered over the button!"
+    return f"<h1>{text}</h1>"
 
 
 @app.route("/")
 def home():
-    button = Button(
+    click_btn = Button(
         "Hello, {{ world }}!",
         attrs={"class": "btn btn-primary"},
         events=[
@@ -30,26 +34,43 @@ def home():
                 "target": "#output",
                 "swap": "innerHTML",
             },
+        ],
+        id="my-button-{uuid}",
+        _="on click toggle .btn-primary .btn-secondary on me",
+    )
+    mouseover_btn = Button(
+        "Hello, {{ world }}!",
+        attrs={"class": "btn btn-primary"},
+        events=[
             {
-                "rule": "/click",
-                "method": "get",
+                "rule": "/mouseover",
+                "method": "post",
                 "trigger": "mouseover",
                 "target": "#output",
                 "swap": "innerHTML",
             },
         ],
-        id="my-button",
+        id="my-button-{uuid}",
     )
-    body = RenderableList(
+    h1 = Element(
+        "h1",
+        "Hello!",
+        _="on click go to url https://htmx.org",
+    )
+    body = FlatList(
         [
             "<h1>Home</h1>",
             "<p>Welcome to the home page</p>",
-            button,
+            click_btn,
+            mouseover_btn,
             "<div id='output'></div>",
+            h1,
         ]
     )
     return render_template(
-        "index.html", title="Hello World!", body=body.render(world="John")
+        "index.html",
+        title="Hello World!",
+        body=body.render(world="John"),
     )
 
 

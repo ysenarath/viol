@@ -9,7 +9,7 @@ from collections import UserList
 from collections.abc import Iterable, MutableSequence
 from dataclasses import dataclass
 from html import escape
-from typing import Any, Protocol, TypeVar, runtime_checkable
+from typing import Any, Protocol, TypeGuard, TypeVar, runtime_checkable
 
 from flask import render_template_string
 
@@ -19,8 +19,7 @@ __all__ = [
     "ComponentBaseConfig",
     "Element",
     "Event",
-    "Renderable",
-    "RenderableList",
+    "FlatList",
     "VoidElement",
 ]
 
@@ -28,8 +27,25 @@ T = TypeVar("T")
 
 
 @runtime_checkable
-class Renderable(Protocol):
+class RenderableI(Protocol):
     def render(self, **ctx: Any) -> str: ...
+
+
+R = RenderableI | str
+
+
+def is_renderable(obj: Any) -> TypeGuard[R]:
+    return isinstance(obj, (RenderableI, str))
+
+
+def render(r: R, **ctx: Any) -> str:
+    if r is None:
+        return ""
+    if isinstance(r, RenderableI):
+        return r.render(**ctx)
+    if isinstance(r, Iterable) and not isinstance(r, str):
+        return "".join(render(c, **ctx) for c in r)
+    return render_template_string(r, **ctx)
 
 
 class AttrList(UserList[tuple[str, Any]]):
@@ -37,6 +53,15 @@ class AttrList(UserList[tuple[str, Any]]):
         if isinstance(data, dict):
             data = data.items()
         super().__init__(data or [])
+
+    def replace(self, item: tuple[str, Any]) -> None:
+        for i, (k, _) in enumerate(self):
+            if k == item[0]:
+                self[i] = item
+                # else will not run if break is called
+                break
+        else:
+            self.append(item)
 
     def to_string(self) -> str:
         return " ".join([f'{escape(k)}="{escape(str(v))}"' for k, v in self])
@@ -76,7 +101,7 @@ class ComponentBase(abc.ABC):
 
     @id.setter
     def id(self, value: str | None) -> None:
-        self._id = escape(value) if value else None
+        self._id = escape(value).format(uuid=uuid.uuid4().hex) if value else None
 
     @abc.abstractmethod
     def render(self, **ctx: Any) -> str:
@@ -99,6 +124,7 @@ class Event(ComponentBase, prefix="hx-event-"):
     target: str | None = None
     swap: str | None = None
     include: str | None = None
+    sync: str | None = None
 
     def to_string(self) -> str:
         attr = " ".join(
@@ -110,6 +136,7 @@ class Event(ComponentBase, prefix="hx-event-"):
                     "hx-target": self.target,
                     "hx-swap": self.swap,
                     "hx-include": self.include,
+                    "hx-sync": self.sync,
                 }.items()
                 if v
             ]
@@ -172,7 +199,7 @@ class EventList(ValidatedList[Event]):
         return event
 
 
-class RenderableList(ValidatedList[str | Renderable]):
+class FlatList(ValidatedList[R]):
     def __init__(self, data: str | list[Any] | None = None):
         super().__init__()
         if isinstance(data, str):
@@ -182,7 +209,7 @@ class RenderableList(ValidatedList[str | Renderable]):
     @classmethod
     def _unwrap(cls, items: Iterable[Any]):
         for item in items:
-            if isinstance(item, (str, Renderable)):
+            if is_renderable(item):
                 yield item
             else:
                 yield from cls._unwrap(item)
@@ -190,11 +217,7 @@ class RenderableList(ValidatedList[str | Renderable]):
     def render(self, **ctx: Any) -> str:
         html = ""
         for item in self._unwrap(self):
-            html += (
-                render_template_string(item, **ctx)
-                if isinstance(item, str)
-                else item.render(**ctx)
-            )
+            html += render(item, **ctx)
         return html
 
 
@@ -202,26 +225,21 @@ class Element(ComponentBase, prefix="hx-{self.tag}-"):
     def __init__(
         self,
         tag: str,
-        children: str | Renderable | list[Renderable | str] | None = None,
+        children: R | list[R] | None = None,
         attrs: AttrList = None,
         id: str | None = None,
         events: list[Event] | Event | None = None,
+        _: str | None = None,
     ):
         self.tag = tag
         self.children = children
         self.attrs = AttrList(attrs)
+        if _:
+            self.attrs.replace(("_", _))
         super().__init__(id=id, events=events)
 
-    @classmethod
-    def _render(cls, children: Any, **ctx: Any) -> str:
-        if isinstance(children, Renderable):
-            return children.render(**ctx)
-        if isinstance(children, Iterable) and not isinstance(children, str):
-            return "".join(cls._render(c, **ctx) for c in children)
-        return render_template_string(children, **ctx)
-
     def render(self, **ctx: Any) -> str:
-        children = self._render(self.children, **ctx)
+        children = render(self.children, **ctx)
         tag = escape(self.tag)
         attr_id = f'id="{self.id}"' if self.id else ""
         attrs = self.attrs.to_string()
@@ -236,8 +254,9 @@ class VoidElement(Element):
         attrs: AttrList = None,
         id: str | None = None,
         events: list[Event] | Event | None = None,
+        _: str | None = None,
     ):
-        super().__init__(tag=tag, children=None, attrs=attrs, id=id, events=events)
+        super().__init__(tag=tag, children=None, attrs=attrs, id=id, events=events, _=_)
 
     def render(self, **ctx: Any) -> str:
         tag = escape(self.tag)
