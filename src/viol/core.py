@@ -16,10 +16,11 @@ from flask import render_template_string
 __all__ = [
     "AttrList",
     "ComponentBase",
-    "ComponentList",
+    "ComponentBaseConfig",
     "Element",
     "Event",
     "Renderable",
+    "RenderableList",
     "VoidElement",
 ]
 
@@ -244,32 +245,3 @@ class VoidElement(Element):
         attr_id = f'id="{self.id}"' if self.id else ""
         event, other_events = self.render_events()
         return f"<{tag} {attr_id} {attrs} {event} />{other_events}"
-
-
-if __name__ == "__main__":
-    from flask import Flask
-
-    app = Flask(__name__)
-    with app.app_context():
-        button = Element(
-            "button",
-            children="Click me!",
-            attrs={"class": "btn btn-primary"},
-            events=[
-                {
-                    "rule": "/click",
-                    "method": "post",
-                    "trigger": "click",
-                    "target": "#output",
-                    "swap": "outerHTML",
-                },
-                {
-                    "rule": "/click",
-                    "method": "get",
-                    "trigger": "mouseover",
-                    "target": "#output",
-                    "swap": "outerHTML",
-                },
-            ],
-        )
-        print(button.render())
