@@ -1,24 +1,21 @@
 from __future__ import annotations
 
-from viol.core import AttrList, Element, Event, R
+from viol.core import AttrList, Element, Event, RenderableType
 
-__all__ = ["Div"]
+__all__ = [
+    "Div",
+]
 
 
-class Div(Element, prefix="div-"):
+class Div(Element):
     def __init__(
         self,
-        children: R | list[R] | None = None,
+        children: RenderableType = None,
         attrs: AttrList = None,
         id: str | None = None,
         events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
-            tag="div",
-            children=children,
-            attrs=attrs,
-            id=id,
-            events=events,
-            _=_,
+            tag="div", children=children, attrs=attrs, id=id, events=events, _=_
         )

@@ -1,13 +1,23 @@
 from __future__ import annotations
 
-from viol.core import AttrList, Element, Event, R
+from viol.core import AttrList, Element, Event, RenderableType
+
+__all__ = [
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5",
+    "H6",
+    "Header",
+]
 
 
-class Header(Element, prefix="header-"):
+class Header(Element):
     def __init__(
         self,
+        children: RenderableType | list[RenderableType] | None = None,
         level: int = 1,
-        children: R | list[R] | None = None,
         attrs: AttrList = None,
         id: str | None = None,
         events: list[Event] | Event | None = None,
@@ -29,13 +39,20 @@ class HeaderBuilder:
 
     def __call__(
         self,
-        children: R | list[R] | None = None,
+        children: RenderableType | list[RenderableType] | None = None,
         attrs: AttrList = None,
         id: str | None = None,
         events: list[Event] | Event | None = None,
         _: str | None = None,
     ) -> Header:
-        return Header(self.level, children, attrs, id, events, _)
+        return Header(
+            children=children,
+            level=self.level,
+            attrs=attrs,
+            id=id,
+            events=events,
+            _=_,
+        )
 
 
 H1 = HeaderBuilder(1)

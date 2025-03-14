@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from viol.core import AttrList, Element, Event, R
+from viol.core import AttrList, Element, Event, RenderableType
 
 __all__ = ["Span"]
 
 
-class Span(Element, prefix="span-"):
+class Span(Element):
     def __init__(
         self,
-        children: R | list[R] | None = None,
+        children: RenderableType | list[RenderableType] | None = None,
         attrs: AttrList = None,
         id: str | None = None,
         events: list[Event] | Event | None = None,
