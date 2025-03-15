@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from bootstrap import sample_accordion
+from accordion import sample_accordion
 from flask import render_template
+from navbar import simple_navbar
 
 from viol import Server, render
-from viol.elements import H1, Button
 from viol.bootstrap.alert import Alert
+from viol.elements import H1, Button
 
 app = Server(__name__)
 
@@ -77,6 +78,7 @@ def home():
         id="my-button-{{ctx.component.uuid}}",
     )
     body = [
+        simple_navbar(),
         click_btn,
         mouseover_btn,
         "<div id='output'></div>",
