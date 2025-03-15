@@ -24,10 +24,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = [
-    "flask>=3.0.3",
-    "multidict>=6.1.0",
-]
+dependencies = ["flask>=3.0.3", "multidict>=6.1.0"]
 
 [project.urls]
 Documentation = "https://github.com/ysenarath/viol#readme"
@@ -91,3 +88,7 @@ extend-immutable-calls = [
     "torch.tensor",
     "torch.Tensor",
 ]
+
+
+[tool.ruff.lint.pylint]
+max-args = 50
