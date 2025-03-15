@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing_extensions import Literal
 
 from viol.core import AttrList, Event, RenderableType
-from viol.elements import Button, Div
+from viol.html import Button, Div
 
 __all__ = [
     "Alert",

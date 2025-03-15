@@ -6,7 +6,7 @@ from navbar import simple_navbar
 
 from viol import Server, render
 from viol.bootstrap.alert import Alert
-from viol.elements import H1, Button
+from viol.html import H1, Button
 
 app = Server(__name__)
 
