@@ -164,10 +164,6 @@ class AttrsProperty:
                 rule = instance.get(f"{self.prefix}{method}")
                 if rule:
                     return rule
-        # if self.name == "id":
-        #   # set the id to the uuid value
-        #   instance["id"] = uuid.uuid4().hex
-        # return instance.get(self.name)
         return instance[self.name]
 
     def __set__(self, instance: AttrList | None, value: Any) -> None:
