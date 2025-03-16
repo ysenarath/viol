@@ -253,7 +253,7 @@ class Event(AttrList, Component):
     include = AttrsProperty("hx-")
     sync = AttrsProperty("hx-")
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         rule: str | None = None,
         method: str | None = None,
