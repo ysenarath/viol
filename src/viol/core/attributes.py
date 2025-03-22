@@ -9,7 +9,7 @@ from multidict import CIMultiDict
 from viol.core.base import render
 
 __all__ = [
-    "AttrList",
+    "AttrMultiDict",
 ]
 
 T = TypeVar("T")
@@ -27,7 +27,7 @@ class AttrsProperty:
             return
         self.name = f"{self.prefix}{name}"
 
-    def __get__(self, instance: AttrList | None, owner: Any = None) -> str | None:
+    def __get__(self, instance: AttrMultiDict | None, owner: Any = None) -> str | None:
         if instance is None:
             return self
         if self.name == f"{self.prefix}method":
@@ -41,7 +41,7 @@ class AttrsProperty:
                     return rule
         return instance[self.name]
 
-    def __set__(self, instance: AttrList | None, value: Any) -> None:
+    def __set__(self, instance: AttrMultiDict | None, value: Any) -> None:
         if instance is None:
             msg = f"{self.name} must be set on an Event instance"
             raise AttributeError(msg)
@@ -70,7 +70,7 @@ class AttrsProperty:
             instance[self.name] = value
 
 
-class AttrList(MutableMapping[str, T]):
+class AttrMultiDict(MutableMapping[str, T]):
     id = AttrsProperty()
     _ = AttrsProperty()
     class_ = AttrsProperty(name="class")

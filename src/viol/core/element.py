@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from html import escape
 
-from viol.core.attrs import AttrList
+from viol.core.attributes import AttrMultiDict
 from viol.core.base import Component, RenderableType, render
-from viol.core.events import Event, EventList
+from viol.core.events import EventHandler, EventHandlerList
 
 __all__ = [
     "Element",
@@ -17,20 +17,20 @@ class Element(Component):
         self,
         tag: str,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
+        events: list[EventHandler] | EventHandler | None = None,
         _: str | None = None,
     ):
         super().__init__()
         self.tag = tag
         self.children = children
-        self.attrs = AttrList(attrs)
+        self.attrs = AttrMultiDict(attrs)
         if id:
             self.attrs.id = id
         if _:
             self.attrs._ = _
-        self.events = EventList(self, events)
+        self.events = EventHandlerList(self, events)
 
     def render(self) -> str:
         children = render(self.children)
@@ -47,9 +47,9 @@ class VoidElement(Element):
     def __init__(
         self,
         tag: str,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
+        events: list[EventHandler] | EventHandler | None = None,
         _: str | None = None,
     ):
         super().__init__(tag=tag, children=None, attrs=attrs, id=id, events=events, _=_)

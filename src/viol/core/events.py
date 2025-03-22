@@ -3,20 +3,20 @@ import re
 import weakref
 from typing import TYPE_CHECKING, Any
 
-from viol.core.attrs import AttrList, AttrsProperty
+from viol.core.attributes import AttrMultiDict, AttrsProperty
 from viol.core.base import Component
 from viol.utils.collections import ValidatedList
 
 __all__ = [
-    "Event",
-    "EventList",
+    "EventHandler",
+    "EventHandlerList",
 ]
 
 if TYPE_CHECKING:
     from viol.core.element import Element
 
 
-class Event(AttrList, Component):
+class EventHandler(AttrMultiDict, Component):
     method = AttrsProperty("hx-")
     rule = AttrsProperty("hx-")
     trigger = AttrsProperty("hx-")
@@ -53,11 +53,13 @@ class Event(AttrList, Component):
         return f"<div {self.to_string()}></div>"
 
 
-class EventList(ValidatedList[Event]):
-    def __init__(self, bound: Element, data: list[Event] | Event | None = None):
+class EventHandlerList(ValidatedList[EventHandler]):
+    def __init__(
+        self, bound: Element, data: list[EventHandler] | EventHandler | None = None
+    ):
         super().__init__()
         self.bound = weakref.ref(bound)
-        if isinstance(data, Event):
+        if isinstance(data, EventHandler):
             data = [data]
         self.extend(data or [])
 
@@ -70,8 +72,12 @@ class EventList(ValidatedList[Event]):
             self.found = True
             return self.repl
 
-    def validate(self, value: Any) -> Event:
-        event = copy.deepcopy(value) if isinstance(value, Event) else Event(**value)
+    def validate(self, value: Any) -> EventHandler:
+        event = (
+            copy.deepcopy(value)
+            if isinstance(value, EventHandler)
+            else EventHandler(**value)
+        )
         match = self.Match(f"#{self.bound().attrs.id}")
         # replace or add the trigger (directing to the bound element)
         event.trigger = re.sub(r"(?<=from:)([#\w]+)", match, event.trigger)

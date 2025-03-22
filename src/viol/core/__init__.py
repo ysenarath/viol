@@ -1,13 +1,13 @@
-from viol.core.attrs import AttrList
+from viol.core.attributes import AttrMultiDict
 from viol.core.base import RenderableType, render
 from viol.core.element import Element, VoidElement
-from viol.core.events import Event, EventList
+from viol.core.events import EventHandler, EventHandlerList
 
 __all__ = [
-    "AttrList",
+    "AttrMultiDict",
     "Element",
-    "Event",
-    "EventList",
+    "EventHandler",
+    "EventHandlerList",
     "RenderableType",
     "VoidElement",
     "render",
