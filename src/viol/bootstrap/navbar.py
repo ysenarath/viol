@@ -1,10 +1,22 @@
 from __future__ import annotations
 
-from viol.core import AttrList, Event, RenderableType
-from viol.html import A, Button, Div, Form, Li, Nav, Span, Ul
+from viol import html
+from viol.core import AttrMultiDict, Element, EventHandler, RenderableType
+
+__all__ = [
+    "NavItem",
+    "NavLink",
+    "Navbar",
+    "NavbarBrand",
+    "NavbarCollapse",
+    "NavbarForm",
+    "NavbarNav",
+    "NavbarText",
+    "NavbarToggler",
+]
 
 
-class Navbar(Nav):
+class Navbar(Element):
     """Bootstrap navbar component that provides responsive navigation header."""
 
     def __init__(
@@ -13,18 +25,19 @@ class Navbar(Nav):
         expand: str = "lg",  # sm|md|lg|xl|xxl
         theme: str = "light",  # light|dark
         bg: str = "body-tertiary",
-        container: str = "fluid",  # fluid|sm|md|lg|xl|xxl or None
+        container: str | None = None,  # fluid|sm|md|lg|xl|xxl or None
         placement: str | None = None,  # fixed-top|fixed-bottom|sticky-top|sticky-bottom
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "nav",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         # Add theme class
@@ -44,60 +57,59 @@ class Navbar(Nav):
         self.attrs.class_ = classes
         # Wrap children in container if specified
         if container:
-            container_div = Div(
+            container_div = html.div(
                 children=children,
                 attrs={"class": [f"container-{container}"]},
             )
             self.children = [container_div]
         else:
-            self.children = (
-                children
-                if isinstance(children, list)
-                else [children]
-                if children
-                else []
+            self.children = html.div(
+                children=children,
+                attrs={"class": ["container"]},
             )
 
 
-class NavbarBrand(A):
+class NavbarBrand(Element):
     """Navbar brand/logo component."""
 
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
         href: str = "#",
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "a",
             children=children,
-            href=href,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
+        self.attrs["href"] = href
         self.attrs["class"] = ["navbar-brand"]
 
 
-class NavbarToggler(Button):
+class NavbarToggler(Element):
     """Navbar toggler button for collapsing navigation on mobile."""
 
     def __init__(
         self,
         target: str,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
-            children=[Span(attrs={"class": "navbar-toggler-icon"})],
+            "button",
+            children=[html.span(attrs={"class": "navbar-toggler-icon"})],
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs.update(
@@ -113,70 +125,73 @@ class NavbarToggler(Button):
         )
 
 
-class NavbarCollapse(Div):
+class NavbarCollapse(Element):
     """Collapsible navbar content container."""
 
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "div",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = ["collapse", "navbar-collapse"]
 
 
-class NavbarNav(Ul):
+class NavbarNav(Element):
     """Navigation list container for navbar items."""
 
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "ul",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = ["navbar-nav", "me-auto", "mb-2", "mb-lg-0"]
 
 
-class NavItem(Li):
+class NavItem(Element):
     """Individual navigation item container."""
 
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "li",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = ["nav-item"]
 
 
-class NavLink(A):
+class NavLink(Element):
     """Navigation link within navbar."""
 
     def __init__(
@@ -185,19 +200,20 @@ class NavLink(A):
         href: str = "#",
         active: bool = False,
         disabled: bool = False,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "a",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
-            href=href,
         )
+        self.attrs["href"] = href
         classes = ["nav-link"]
         if active:
             classes.append("active")
@@ -208,44 +224,46 @@ class NavLink(A):
         self.attrs["class"] = classes
 
 
-class NavbarText(Span):
+class NavbarText(Element):
     """Text content within navbar."""
 
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "span",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = ["navbar-text"]
 
 
-class NavbarForm(Form):
+class NavbarForm(Element):
     """Form within navbar, typically used for search."""
 
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
         role: str = "search",
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "form",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs.update({"class": "d-flex", "role": role})

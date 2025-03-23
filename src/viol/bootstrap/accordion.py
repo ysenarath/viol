@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from viol.core import AttrList, Event, RenderableType
-from viol.html.button import Button
-from viol.html.div import Div
-from viol.html.header import Header
+from viol.core import AttrMultiDict, Element, EventHandler, RenderableType
 
 
 class ValueErrorMessages:
@@ -16,79 +13,82 @@ def must(key: str, value: str | None) -> str:
     return value
 
 
-class Accordion(Div):
+class Accordion(Element):
     def __init__(
         self,
         children: list[AccordionItem] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "div",
             children=children,
             attrs=attrs,
-            id=must("id", id),
             events=events,
+            id=must("id", id),
             _=_,
         )
         self.attrs["class"] = "accordion"
 
 
-class AccordionItem(Div):
+class AccordionItem(Element):
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "div",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = "accordion-item"
 
 
-class AccordionHeader(Header):
+class AccordionHeader(Element):
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
         level: int = 2,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            f"h{level}",
             children=children,
-            level=level,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = "accordion-header"
 
 
-class AccordionButton(Button):
+class AccordionButton(Element):
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "button",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = "accordion-button collapsed"
@@ -105,40 +105,42 @@ class AccordionButton(Button):
         )
 
 
-class AccordionCollapse(Div):
+class AccordionCollapse(Element):
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "div",
             children=children,
             attrs=attrs,
-            id=must("id", id),
             events=events,
+            id=must("id", id),
             _=_,
         )
         self.attrs["class"] = "accordion-collapse collapse"
         self.attrs["data-bs-parent"] = "#{{ctx.parent.parent.component.attrs.id}}"
 
 
-class AccordionBody(Div):
+class AccordionBody(Element):
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
-        attrs: AttrList = None,
+        attrs: AttrMultiDict = None,
+        events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        events: list[Event] | Event | None = None,
         _: str | None = None,
     ):
         super().__init__(
+            "div",
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
         self.attrs["class"] = "accordion-body"
