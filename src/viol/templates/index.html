@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ title }}</title>
     <link
-      href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}"
+      href="{{ url_for('viol.static', filename='css/bootstrap.min.css' ) }}"
       rel="stylesheet"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
@@ -14,15 +14,35 @@
       {{ styles | safe }}
     </style>
   </head>
-
   <body>
     {{ body | safe }}
-    <script src="{{ url_for('static', filename='js/hyperscript.min.js' ) }}"></script>
+    <div class="modal" tabindex="-1" id="violConfirmModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Confirm</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p id="violConfirmModalMessage">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary" id="violConfirmModalConfirmButton">Yes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <script src="{{ url_for('viol.static', filename='js/hyperscript.min.js' ) }}"></script>
     <script
-      src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"
+      src="{{ url_for('viol.static', filename='js/bootstrap.min.js' ) }}"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script src="{{ url_for('static', filename='js/htmx.min.js' ) }}"></script>
+    <script src="{{ url_for('viol.static', filename='js/htmx.min.js' ) }}"></script>
+    <script src="{{ url_for('viol.static', filename='js/htmx-bootstrap.js' ) }}"></script>
+    <script>
+      {{ scripts | safe }}
+    </script>
   </body>
 </html>
