@@ -18,8 +18,8 @@ class Element(Component):
         tag: str,
         children: RenderableType | list[RenderableType] | None = None,
         attrs: AttrMultiDict = None,
-        id: str | None = None,
         events: list[EventHandler] | EventHandler | None = None,
+        id: str | None = None,
         _: str | None = None,
     ):
         super().__init__()
@@ -48,11 +48,11 @@ class VoidElement(Element):
         self,
         tag: str,
         attrs: AttrMultiDict = None,
-        id: str | None = None,
         events: list[EventHandler] | EventHandler | None = None,
+        id: str | None = None,
         _: str | None = None,
     ):
-        super().__init__(tag=tag, children=None, attrs=attrs, id=id, events=events, _=_)
+        super().__init__(tag=tag, children=None, attrs=attrs, events=events, id=id, _=_)
 
     def render(self) -> str:
         tag = escape(self.tag)

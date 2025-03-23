@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import copy
 import re
 import weakref
@@ -24,6 +26,7 @@ class EventHandler(AttrMultiDict, Component):
     swap = AttrsProperty("hx-")
     include = AttrsProperty("hx-")
     sync = AttrsProperty("hx-")
+    confirm = AttrsProperty("hx-")
 
     def __init__(
         self,
@@ -34,6 +37,7 @@ class EventHandler(AttrMultiDict, Component):
         swap: str | None = None,
         include: str | None = None,
         sync: str | None = None,
+        confirm: str | None = None,
     ):
         attrs = [
             (k, v)
@@ -44,6 +48,7 @@ class EventHandler(AttrMultiDict, Component):
                 "hx-swap": swap,
                 "hx-include": include,
                 "hx-sync": sync,
+                "hx-confirm": confirm,
             }.items()
             if v
         ]
@@ -78,8 +83,12 @@ class EventHandlerList(ValidatedList[EventHandler]):
             if isinstance(value, EventHandler)
             else EventHandler(**value)
         )
-        match = self.Match(f"#{self.bound().attrs.id}")
         # replace or add the trigger (directing to the bound element)
+        try:
+            event.trigger
+        except Exception:
+            return event
+        match = self.Match(f"#{self.bound().attrs.id}")
         event.trigger = re.sub(r"(?<=from:)([#\w]+)", match, event.trigger)
         if not match.found:
             event.trigger = f"{event.trigger} from:{match.repl}"

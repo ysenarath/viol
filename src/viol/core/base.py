@@ -3,13 +3,15 @@ from __future__ import annotations
 import abc
 import functools
 import uuid
-from collections.abc import Iterable, MutableMapping
+from collections import UserDict
+from collections.abc import Iterable
 from contextvars import Context, ContextVar, copy_context
 from typing import Any, TypeGuard, TypeVar
 
 from jinja2 import Template
 
 __all__ = [
+    "Component",
     "RenderableType",
     "render",
 ]
@@ -19,7 +21,7 @@ T = TypeVar("T")
 render_ctx: ContextVar[ContextDict] = ContextVar("render_ctx", default=None)
 
 
-class ContextDict(MutableMapping[str, Any]):
+class ContextDict(UserDict[str, Any]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.parent: ContextDict | None = None
@@ -33,9 +35,6 @@ class ContextDict(MutableMapping[str, Any]):
                 return self.parent[key]
             raise
 
-    def __setitem__(self, key: str, value: Any) -> None:
-        super().__setitem__(key, value)
-
     def __delitem__(self, key: str) -> None:
         try:
             super().__delitem__(key)
@@ -45,16 +44,13 @@ class ContextDict(MutableMapping[str, Any]):
             raise
 
     def __iter__(self) -> Iterable[str]:
-        keys = set(self.keys())
+        keys = set(super().__iter__())
         if self.parent:
-            keys.update(self.parent.keys())
+            keys.update(self.parent.__iter__())
         return iter(keys)
 
     def __len__(self) -> int:
-        keys = set(self.keys())
-        if self.parent:
-            keys.update(self.parent.keys())
-        return len(keys)
+        return len(set(self.keys()))
 
 
 class Component(abc.ABC):
@@ -122,7 +118,8 @@ def render(r: RenderableType) -> str:
         # lists, tuples, sets, etc.
         return " ".join(render(c) for c in r)
     # template to render
-    r: Template = Template(r)
+    if isinstance(r, str):
+        r: Template = Template(r)
     ctx = render_ctx.get()
     if ctx is None:
         return r.render()
