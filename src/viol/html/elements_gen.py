@@ -74,16 +74,16 @@ class ElementBuilder(Generic[A]):
         self,
         children: RenderableType | list[RenderableType] = None,
         attrs: A | None = None,
-        id: str | None = None,
         events: list[EventHandler] | EventHandler | None = None,
+        id: str | None = None,
         _: str | None = None,
     ) -> Element:
         return Element(
             tag=self.tag,
             children=children,
             attrs=attrs,
-            id=id,
             events=events,
+            id=id,
             _=_,
         )
 
