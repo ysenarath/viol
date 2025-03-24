@@ -10,9 +10,7 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <style>
-      {{ styles | safe }}
-    </style>
+    {{ extra_head_content | safe }}
   </head>
   <body>
     {{ body | safe }}
@@ -41,8 +39,6 @@
     ></script>
     <script src="{{ url_for('viol.static', filename='js/htmx.min.js' ) }}"></script>
     <script src="{{ url_for('viol.static', filename='js/htmx-bootstrap.js' ) }}"></script>
-    <script>
-      {{ scripts | safe }}
-    </script>
+    {{ extra_body_content | safe }}
   </body>
 </html>

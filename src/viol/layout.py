@@ -32,19 +32,19 @@ class Layout(Component):
         self,
         body: str = "",
         title: str = "Viol",
-        styles: str | None = None,
-        scripts: str | None = None,
+        extra_head_content: str | None = None,
+        extra_body_content: str | None = None,
     ) -> None:
         self.env = Environment(loader=FileSystemLoader(cwd / "templates"))
         self.template = self.env.get_template("index.html")
         self.title = title
-        self.styles = styles
+        self.extra_head_content = extra_head_content
         self.body = body
-        self.scripts = scripts
+        self.extra_body_content = extra_body_content
 
     def render(self) -> str:
         self.ctx["title"] = self.title
-        self.ctx["styles"] = render(self.styles)
+        self.ctx["extra_head_content"] = render(self.extra_head_content)
         self.ctx["body"] = render(self.body)
-        self.ctx["scripts"] = render(self.scripts)
+        self.ctx["extra_body_content"] = render(self.extra_body_content)
         return self.template.render(url_for=url_for, **self.ctx)

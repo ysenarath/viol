@@ -27,6 +27,7 @@ class EventHandler(AttrMultiDict, Component):
     include = AttrsProperty("hx-")
     sync = AttrsProperty("hx-")
     confirm = AttrsProperty("hx-")
+    vals = AttrsProperty("hx-")
 
     def __init__(
         self,
@@ -38,6 +39,7 @@ class EventHandler(AttrMultiDict, Component):
         include: str | None = None,
         sync: str | None = None,
         confirm: str | None = None,
+        vals: str | None = None,
     ):
         attrs = [
             (k, v)
@@ -49,6 +51,7 @@ class EventHandler(AttrMultiDict, Component):
                 "hx-include": include,
                 "hx-sync": sync,
                 "hx-confirm": confirm,
+                "hx-vals": vals,
             }.items()
             if v
         ]
@@ -85,7 +88,7 @@ class EventHandlerList(ValidatedList[EventHandler]):
         )
         # replace or add the trigger (directing to the bound element)
         try:
-            event.trigger
+            event.trigger  # noqa: B018
         except Exception:
             return event
         match = self.Match(f"#{self.bound().attrs.id}")
