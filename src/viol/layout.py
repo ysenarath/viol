@@ -27,7 +27,7 @@ def init_app(
     app.register_blueprint(layout)
 
 
-class Layout(Component):
+class BasicLayout(Component):
     def __init__(
         self,
         body: str = "",

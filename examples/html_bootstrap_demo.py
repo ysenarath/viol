@@ -5,7 +5,7 @@ from flask import Flask
 from navbar import simple_navbar
 
 import viol
-from viol import Layout, html, render
+from viol import BasicLayout, html, render
 
 app = Flask(__name__)
 
@@ -23,7 +23,7 @@ def home():
         ),
     ]
 
-    return render(Layout(body=body))
+    return render(BasicLayout(body=body))
 
 
 if __name__ == "__main__":

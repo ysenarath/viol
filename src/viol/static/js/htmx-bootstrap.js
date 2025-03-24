@@ -34,3 +34,22 @@ document.body.addEventListener("htmx:confirm", function (evt) {
         }
     }
 });
+
+document.body.addEventListener("violAlert", function (evt) {
+    // add alert to the page (bootstrap alert)
+    let alert = document.createElement("div");
+    alert.classList.add("alert", "alert-" + evt.detail.level);
+    alert.innerText = evt.detail.message;
+    // position the alert at the top right corner
+    alert.style.position = "fixed";
+    alert.style.left = 0;
+    alert.style.bottom = 0;
+    alert.style.width = "20em";
+    alert.style.margin = "1em";
+    alert.style.zIndex = 1000;
+    document.body.appendChild(alert);
+    // remove the alert after 5 seconds
+    setTimeout(() => {
+        alert.remove();
+    }, 3000);
+});

@@ -3,7 +3,7 @@
 from flask import Flask, url_for
 
 import viol
-from viol import Layout, html, render
+from viol import BasicLayout, html, render
 
 app = Flask(__name__)
 
@@ -77,7 +77,7 @@ def home():
         id="main-container",
     )
 
-    return render(Layout(body=body))
+    return render(BasicLayout(body=body))
 
 
 @app.route("/submit", methods=["POST"])
