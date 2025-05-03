@@ -1,18 +1,26 @@
 """Demonstration of the new html_v2 module with type-safe elements."""
 
-from flask import Flask, request, url_for
+from flask import Flask, request, session, url_for
 
 import viol
 from viol import BasicLayout, html, render
 
 app = Flask(__name__)
+app.secret_key = "some_secret"  # Required for sessions
+
 
 viol.init_app(app)
 
 
 @app.route("/")
 def home():
-    # Create a container with proper typing
+    # Initialize contacts in session if not already present
+    if "contacts" not in session:
+        session["contacts"] = [
+            {"name": "John Doe", "email": "john.doe@example.com"},
+            {"name": "Jane Smith", "email": "jane.smith@example.com"},
+        ]
+
     body = [
         html.div(
             [
@@ -35,7 +43,33 @@ def home():
                                 ),
                                 html.tbody(
                                     id="contacts-table",
-                                    children=[],
+                                    children=[
+                                        html.tr(
+                                            [
+                                                html.td([contact["name"]]),
+                                                html.td([contact["email"]]),
+                                                html.td(
+                                                    [
+                                                        html.button(
+                                                            "Delete",
+                                                            attrs={
+                                                                "class": "btn btn-danger",
+                                                                "hx-delete": url_for(
+                                                                    "delete_user",
+                                                                    email=contact[
+                                                                        "email"
+                                                                    ],
+                                                                ),
+                                                                "hx-target": "#contacts-table",
+                                                                "hx-swap": "innerHTML",
+                                                            },
+                                                        )
+                                                    ]
+                                                ),
+                                            ]
+                                        )
+                                        for contact in session["contacts"]
+                                    ],
                                 ),
                             ],
                             attrs={"class": "table"},
@@ -100,32 +134,73 @@ def add_user():
     data = dict(request.form)
     name = data.get("name")
     email = data.get("email")
+    contacts = session["contacts"]
+    contacts.append({"name": name, "email": email})
+    session["contacts"] = contacts
+    contacts = session["contacts"]
     items = [
         html.tr(
             [
-                html.td(name),
-                html.td(email),
+                html.td([contact["name"]]),
+                html.td([contact["email"]]),
                 html.td(
-                    html.button(
-                        "Delete",
-                        attrs={
-                            "class": "btn btn-danger",
-                            "hx-delete": url_for("delete_user", email=email),
-                            "hx-target": "#contacts-table",
-                            "hx-swap": "innerHTML",
-                        },
-                    )
+                    [
+                        html.button(
+                            "Delete",
+                            attrs={
+                                "class": "btn btn-danger",
+                                "hx-delete": url_for(
+                                    "delete_user", email=contact["email"]
+                                ),
+                                "hx-target": "#contacts-table",
+                                "hx-swap": "innerHTML",
+                            },
+                        )
+                    ]
                 ),
             ]
-        ),
+        )
+        for contact in contacts
     ]
     return render(items)
 
 
 @app.route("/user/delete/<email>", methods=["DELETE"])
 def delete_user(email: str):
-    return render([])
+    contacts = session["contacts"]
+    contact_to_delete = next(
+        (contact for contact in contacts if contact["email"] == email), None
+    )
+    if contact_to_delete:
+        contacts.remove(contact_to_delete)
+        session["contacts"] = contacts
+    contacts = session["contacts"]
+    items = [
+        html.tr(
+            [
+                html.td([contact["name"]]),
+                html.td([contact["email"]]),
+                html.td(
+                    [
+                        html.button(
+                            "Delete",
+                            attrs={
+                                "class": "btn btn-danger",
+                                "hx-delete": url_for(
+                                    "delete_user", email=contact["email"]
+                                ),
+                                "hx-target": "#contacts-table",
+                                "hx-swap": "innerHTML",
+                            },
+                        )
+                    ]
+                ),
+            ]
+        )
+        for contact in contacts
+    ]
+    return render(items)
 
 
 if __name__ == "__main__":
-    app.run(port=8000, debug=True)
+    app.run("localhost", 5000, debug=True)
