@@ -26,7 +26,7 @@ class CloseButton(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "button",
@@ -34,7 +34,7 @@ class CloseButton(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["type"] = "button"
         self.attrs["class"] = "btn-close"
@@ -51,7 +51,7 @@ class Alert(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         if dismissible:
             children = [children, CloseButton()]
@@ -61,7 +61,7 @@ class Alert(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["role"] = "alert"
         self.attrs["class"] = [

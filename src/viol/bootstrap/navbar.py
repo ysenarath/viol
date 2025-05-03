@@ -30,7 +30,7 @@ class Navbar(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "nav",
@@ -38,7 +38,7 @@ class Navbar(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         # Add theme class
         if theme == "dark":
@@ -79,7 +79,7 @@ class NavbarBrand(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "a",
@@ -87,7 +87,7 @@ class NavbarBrand(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["href"] = href
         self.attrs["class"] = ["navbar-brand"]
@@ -102,7 +102,7 @@ class NavbarToggler(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "button",
@@ -110,7 +110,7 @@ class NavbarToggler(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs.update(
             {
@@ -134,7 +134,7 @@ class NavbarCollapse(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "div",
@@ -142,7 +142,7 @@ class NavbarCollapse(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = ["collapse", "navbar-collapse"]
 
@@ -156,7 +156,7 @@ class NavbarNav(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "ul",
@@ -164,7 +164,7 @@ class NavbarNav(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = ["navbar-nav", "me-auto", "mb-2", "mb-lg-0"]
 
@@ -178,7 +178,7 @@ class NavItem(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "li",
@@ -186,7 +186,7 @@ class NavItem(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = ["nav-item"]
 
@@ -203,7 +203,7 @@ class NavLink(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "a",
@@ -211,7 +211,7 @@ class NavLink(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["href"] = href
         classes = ["nav-link"]
@@ -233,7 +233,7 @@ class NavbarText(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "span",
@@ -241,7 +241,7 @@ class NavbarText(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = ["navbar-text"]
 
@@ -256,7 +256,7 @@ class NavbarForm(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "form",
@@ -264,6 +264,6 @@ class NavbarForm(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs.update({"class": "d-flex", "role": role})

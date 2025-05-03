@@ -20,7 +20,7 @@ class Accordion(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "div",
@@ -28,7 +28,7 @@ class Accordion(Element):
             attrs=attrs,
             events=events,
             id=must("id", id),
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion"
 
@@ -40,7 +40,7 @@ class AccordionItem(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "div",
@@ -48,7 +48,7 @@ class AccordionItem(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion-item"
 
@@ -61,7 +61,7 @@ class AccordionHeader(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             f"h{level}",
@@ -69,7 +69,7 @@ class AccordionHeader(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion-header"
 
@@ -81,7 +81,7 @@ class AccordionButton(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "button",
@@ -89,7 +89,7 @@ class AccordionButton(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion-button collapsed"
         self.attrs["type"] = "button"
@@ -112,7 +112,7 @@ class AccordionCollapse(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "div",
@@ -120,7 +120,7 @@ class AccordionCollapse(Element):
             attrs=attrs,
             events=events,
             id=must("id", id),
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion-collapse collapse"
         self.attrs["data-bs-parent"] = "#{{ctx.parent.parent.component.attrs.id}}"
@@ -133,7 +133,7 @@ class AccordionBody(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__(
             "div",
@@ -141,6 +141,6 @@ class AccordionBody(Element):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion-body"

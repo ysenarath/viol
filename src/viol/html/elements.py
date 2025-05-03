@@ -135,7 +135,7 @@ class ElementBuilder(Generic[A]):
         attrs: A | None = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ) -> Element:
         return Element(
             tag=self.tag,
@@ -143,7 +143,7 @@ class ElementBuilder(Generic[A]):
             attrs=attrs,
             events=events,
             id=id,
-            _=_,
+            hyperscript=hyperscript,
         )
 
 

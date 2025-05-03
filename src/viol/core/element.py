@@ -20,7 +20,7 @@ class Element(Component):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
         super().__init__()
         self.tag = tag
@@ -28,8 +28,8 @@ class Element(Component):
         self.attrs = AttrMultiDict(attrs)
         if id:
             self.attrs.id = id
-        if _:
-            self.attrs._ = _
+        if hyperscript:
+            self.attrs._ = hyperscript
         self.events = EventHandlerList(self, events)
 
     def render(self) -> str:
@@ -50,9 +50,16 @@ class VoidElement(Element):
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
-        _: str | None = None,
+        hyperscript: str | None = None,
     ):
-        super().__init__(tag=tag, children=None, attrs=attrs, events=events, id=id, _=_)
+        super().__init__(
+            tag=tag,
+            children=None,
+            attrs=attrs,
+            events=events,
+            id=id,
+            hyperscript=hyperscript,
+        )
 
     def render(self) -> str:
         tag = escape(self.tag)
