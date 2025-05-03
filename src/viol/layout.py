@@ -10,7 +10,7 @@ from viol.core.base import render
 
 __all__ = []
 
-cwd = Path(__file__).parent
+mdir = Path(__file__).parent
 
 
 def init_app(
@@ -21,7 +21,7 @@ def init_app(
     layout = Blueprint(
         "viol",
         __name__,
-        static_folder=static_folder or cwd / "static",
+        static_folder=static_folder or mdir / "static",
         static_url_path=static_url_path or "/viol/static",
     )
     app.register_blueprint(layout)
@@ -35,7 +35,7 @@ class BasicLayout(Component):
         extra_head_content: str | None = None,
         extra_body_content: str | None = None,
     ) -> None:
-        self.env = Environment(loader=FileSystemLoader(cwd / "templates"))
+        self.env = Environment(loader=FileSystemLoader(mdir / "templates"))
         self.template = self.env.get_template("index.html")
         self.title = title
         self.extra_head_content = extra_head_content
