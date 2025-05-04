@@ -84,6 +84,8 @@ def home():
                                             attrs={
                                                 "name": "name",
                                                 "type": "text",
+                                                "class": "form-control",
+                                                "placeholder": "Enter name",
                                             }
                                         ),
                                     ]
@@ -95,6 +97,8 @@ def home():
                                             attrs={
                                                 "name": "email",
                                                 "type": "email",
+                                                "class": "form-control",
+                                                "placeholder": "Enter email address",
                                             }
                                         ),
                                     ]
@@ -203,4 +207,4 @@ def delete_user(email: str):
 
 
 if __name__ == "__main__":
-    app.run("localhost", 5000, debug=True)
+    app.run(port=8000, debug=True)
