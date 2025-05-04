@@ -3,10 +3,11 @@ from __future__ import annotations
 import abc
 import functools
 import uuid
+import weakref
 from collections import UserDict
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from contextvars import Context, ContextVar, copy_context
-from typing import Any, TypeGuard, TypeVar
+from typing import Any, TypeGuard, TypeVar, Union
 
 from jinja2 import Template
 
@@ -21,11 +22,44 @@ T = TypeVar("T")
 render_ctx: ContextVar[ContextDict] = ContextVar("render_ctx", default=None)
 
 
+class ListView(Sequence[T]):
+    def __init__(self, object: T, attr: str):
+        self.get_object = weakref.ref(object)
+        self.attr = attr
+
+    def __iter__(self) -> Iterable[T]:
+        obj = self.get_object()
+        while obj is not None:
+            obj = getattr(obj, self.attr)
+            yield obj
+
+    def __len__(self) -> int:
+        obj = self.get_object()
+        count = 0
+        while obj is not None:
+            count += 1
+            obj = getattr(obj, self.attr)
+        return count
+
+    def __getitem__(self, index: int) -> T:
+        obj = self.get_object()
+        for _ in range(index):
+            if obj is None:
+                msg = f"index {index} out of range for '{self.attr}'"
+                raise IndexError(msg)
+            obj = getattr(obj, self.attr)
+        return obj
+
+
 class ContextDict(UserDict[str, Any]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.parent: ContextDict | None = None
         self.component: Component | None = None
+
+    @property
+    def parents(self) -> ListView[ContextDict]:
+        return ListView(self, "parent")
 
     def __getitem__(self, key: str) -> Any:
         try:
@@ -89,7 +123,12 @@ class Component(abc.ABC):
         return attr
 
 
-RenderableType = Component | Iterable[Component] | str | None
+RenderableType = Union[
+    Component,
+    Iterable[Component],
+    str,
+    None,
+]
 
 
 def is_renderable(obj: Any) -> TypeGuard[RenderableType]:
