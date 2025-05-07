@@ -266,4 +266,4 @@ class NavbarForm(Element):
             id=id,
             hyperscript=hyperscript,
         )
-        self.attrs.update({"class": "d-flex", "role": role})
+        self.attrs.update({"class": ["d-flex"], "role": role})
