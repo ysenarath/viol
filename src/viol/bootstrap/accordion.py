@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import re
-
 from viol.core import AttrMultiDict, Element, EventHandler, RenderableType
 
 
@@ -33,24 +31,22 @@ class Accordion(Element):
             id=must("id", id),
             hyperscript=hyperscript,
         )
-        self.attrs["class"] = "accordion"
+        self.attrs["class"] = ["accordion"]
         self.accordion_flush = accordion_flush
 
     @property
     def accordion_flush(self) -> bool:
-        # use regex to check if accordion-flush is present
-        return bool(re.search(r"\baccordion-flush\b", self.attrs["class"]))
+        return "accordion-flush" in self.attrs["class"]
 
     @accordion_flush.setter
     def accordion_flush(self, value: bool) -> None:
         if value:
             if "accordion-flush" in self.attrs["class"]:
                 return
-            self.attrs["class"] += " accordion-flush"
+            self.attrs["class"] += "accordion-flush"
         elif "accordion-flush" in self.attrs["class"]:
-            self.attrs["class"] = re.sub(
-                r"\baccordion-flush\b", " ", self.attrs["class"]
-            ).strip()
+            while "accordion-flush" in self.attrs["class"]:
+                self.attrs["class"].remove("accordion-flush")
 
 
 class AccordionItem(Element):
@@ -70,7 +66,7 @@ class AccordionItem(Element):
             id=id,
             hyperscript=hyperscript,
         )
-        self.attrs["class"] = "accordion-item"
+        self.attrs["class"] = ["accordion-item"]
 
 
 class AccordionHeader(Element):
@@ -91,7 +87,7 @@ class AccordionHeader(Element):
             id=id,
             hyperscript=hyperscript,
         )
-        self.attrs["class"] = "accordion-header"
+        self.attrs["class"] = ["accordion-header"]
 
 
 class AccordionButton(Element):
@@ -111,7 +107,7 @@ class AccordionButton(Element):
             id=id,
             hyperscript=hyperscript,
         )
-        self.attrs["class"] = "accordion-button collapsed"
+        self.attrs["class"] = ["accordion-button", "collapsed"]
         self.attrs["type"] = "button"
         self.attrs["data-bs-toggle"] = "collapse"
         # id of the collapse element
@@ -145,7 +141,7 @@ class AccordionCollapse(Element):
             id=must("id", id),
             hyperscript=hyperscript,
         )
-        self.attrs["class"] = "accordion-collapse collapse"
+        self.attrs["class"] = ["accordion-collapse", "collapse"]
         self.always_open = always_open
 
     @property
@@ -177,4 +173,4 @@ class AccordionBody(Element):
             id=id,
             hyperscript=hyperscript,
         )
-        self.attrs["class"] = "accordion-body"
+        self.attrs["class"] = ["accordion-body"]

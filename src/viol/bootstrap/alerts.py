@@ -37,7 +37,7 @@ class CloseButton(Element):
             hyperscript=hyperscript,
         )
         self.attrs["type"] = "button"
-        self.attrs["class"] = "btn-close"
+        self.attrs["class"] = ["btn-close"]
         self.attrs["data-bs-dismiss"] = "alert"
         self.attrs["aria-label"] = "Close"
 
@@ -64,8 +64,6 @@ class Alert(Element):
             hyperscript=hyperscript,
         )
         self.attrs["role"] = "alert"
-        self.attrs["class"] = [
-            "alert",
-            f"alert-{variant}",
-            ["alert-dismissible", "fade", "show"] if dismissible else [],
-        ]
+        self.attrs["class"] = ["alert", f"alert-{variant}"]
+        if dismissible:
+            self.attrs["class"] += ["alert-dismissible", "fade", "show"]
