@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from viol.core import AttrMultiDict, Element, EventHandler, RenderableType
 
 
@@ -21,6 +23,7 @@ class Accordion(Element):
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
         hyperscript: str | None = None,
+        accordion_flush: bool = False,
     ):
         super().__init__(
             "div",
@@ -31,6 +34,23 @@ class Accordion(Element):
             hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion"
+        self.accordion_flush = accordion_flush
+
+    @property
+    def accordion_flush(self) -> bool:
+        # use regex to check if accordion-flush is present
+        return bool(re.search(r"\baccordion-flush\b", self.attrs["class"]))
+
+    @accordion_flush.setter
+    def accordion_flush(self, value: bool) -> None:
+        if value:
+            if "accordion-flush" in self.attrs["class"]:
+                return
+            self.attrs["class"] += " accordion-flush"
+        elif "accordion-flush" in self.attrs["class"]:
+            self.attrs["class"] = re.sub(
+                r"\baccordion-flush\b", " ", self.attrs["class"]
+            ).strip()
 
 
 class AccordionItem(Element):
@@ -95,6 +115,8 @@ class AccordionButton(Element):
         self.attrs["type"] = "button"
         self.attrs["data-bs-toggle"] = "collapse"
         # id of the collapse element
+        # ctx.parent.paren.component is the AccordionItem
+        # ctx.parent.parent.component.children[-1] is the AccordionCollapse
         self.attrs["data-bs-target"] = (
             "#{{ctx.parent.parent.component.children[-1].attrs.id}}"
         )
@@ -113,6 +135,7 @@ class AccordionCollapse(Element):
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
         hyperscript: str | None = None,
+        always_open: bool = False,
     ):
         super().__init__(
             "div",
@@ -123,7 +146,18 @@ class AccordionCollapse(Element):
             hyperscript=hyperscript,
         )
         self.attrs["class"] = "accordion-collapse collapse"
-        self.attrs["data-bs-parent"] = "#{{ctx.parent.parent.component.attrs.id}}"
+        self.always_open = always_open
+
+    @property
+    def always_open(self) -> bool:
+        return "data-bs-parent" in self.attrs
+
+    @always_open.setter
+    def always_open(self, value: bool) -> None:
+        if value:
+            self.attrs.pop("data-bs-parent", None)
+        else:
+            self.attrs["data-bs-parent"] = "#{{ctx.parent.parent.component.attrs.id}}"
 
 
 class AccordionBody(Element):
