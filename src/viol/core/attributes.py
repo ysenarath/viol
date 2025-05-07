@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, MutableMapping
 from html import escape
-from typing import Any, ClassVar, TypeVar
+from typing import Any, ClassVar, Generic, TypeVar, overload
 
 from multidict import CIMultiDict
+from typing_extensions import Literal
 
 from viol.core.base import render
 
@@ -15,7 +16,7 @@ __all__ = [
 T = TypeVar("T")
 
 
-class AttrsProperty:
+class AttrsProperty(Generic[T]):
     methods: ClassVar[set[str]] = {"get", "post", "put", "patch", "delete"}
 
     def __init__(self, prefix: str = "", name: str | None = None):
@@ -27,7 +28,7 @@ class AttrsProperty:
             return
         self.name = f"{self.prefix}{name}"
 
-    def __get__(self, instance: AttrMultiDict | None, owner: Any = None) -> str | None:
+    def __get__(self, instance: AttrMultiDict | None, owner: Any = None) -> T:
         if instance is None:
             return self
         if self.name == f"{self.prefix}method":
@@ -41,7 +42,7 @@ class AttrsProperty:
                     return rule
         return instance[self.name]
 
-    def __set__(self, instance: AttrMultiDict | None, value: Any) -> None:
+    def __set__(self, instance: AttrMultiDict | None, value: T) -> None:
         if instance is None:
             msg = f"{self.name} must be set on an Event instance"
             raise AttributeError(msg)
@@ -71,10 +72,10 @@ class AttrsProperty:
 
 
 class AttrMultiDict(MutableMapping[str, T]):
-    id = AttrsProperty()
-    _ = AttrsProperty()
-    class_ = AttrsProperty(name="class")
-    style = AttrsProperty()
+    id = AttrsProperty[str]()
+    _ = AttrsProperty[str]()
+    class_ = AttrsProperty[list[str]](name="class")
+    style = AttrsProperty[str]()
 
     def __init__(self, *args: Mapping[str, T] | None, **kwargs: T):
         if args:
@@ -83,13 +84,27 @@ class AttrMultiDict(MutableMapping[str, T]):
                 raise TypeError(msg)
             if args[0] is None:
                 args = {}
-        self._data = CIMultiDict(*args, **kwargs)
+        self._data = CIMultiDict()
+        self.update(dict(*args, **kwargs))
+
+    @overload
+    def __getitem__(self, key: Literal["class"]) -> list[str]: ...
 
     def __getitem__(self, key: str) -> T:
+        if key == "class" and key not in self._data:
+            self._data[key] = []
         return self._data[key]
 
+    def _validate_class(self, value: T) -> list[str]:
+        if isinstance(value, str):
+            value = set(value.strip().split())
+        return list(value)
+
     def __setitem__(self, key: str, value: T) -> None:
-        self._data[key] = value
+        if key == "class":
+            self._data[key] = self._validate_class(value)
+        else:
+            self._data[key] = value
 
     def __delitem__(self, key: str) -> None:
         del self._data[key]
