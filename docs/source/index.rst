@@ -10,10 +10,9 @@ Contents
 --------
 
 .. toctree::
+   :maxdepth: 1
 
-   usage
-   api
+   api_docs
 
 .. note::
-
-   This project is under active development.
+    This project is under active development.
