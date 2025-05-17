@@ -95,6 +95,7 @@ class AttrsProperty(Generic[T]):
     ...     id = AttrsProperty[str]()
     ...     method = AttrsProperty[str]("hx-")
     """
+
     methods: ClassVar[set[str]] = {"get", "post", "put", "patch", "delete"}
 
     def __init__(self, prefix: str = "", name: str | None = None):
@@ -115,7 +116,7 @@ class AttrsProperty(Generic[T]):
     def __set_name__(self, owner: Any, name: str, /) -> None:
         """
         Set the descriptor name when it's assigned to a class.
-        
+
         Parameters
         ----------
         owner : type
@@ -243,6 +244,7 @@ class AttrMultiDict(MutableMapping[str, T]):
     >>> # Render to HTML
     >>> html_attrs = attrs.to_string()  # 'id="new-id" class="btn btn-secondary"'
     """
+
     id = AttrsProperty[str]()
     _ = AttrsProperty[str]()
     class_ = AttrsProperty[list[str]](name="class")

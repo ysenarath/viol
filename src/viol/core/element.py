@@ -47,7 +47,6 @@ Version History
 
 from __future__ import annotations
 
-import re
 from html import escape
 
 from viol.core.attributes import AttrMultiDict
@@ -105,6 +104,7 @@ class Element(Component):
     ... ], attrs={"class": "list"})
     >>> ul.render()  # '<ul class="list"><li>Item 1</li> <li>Item 2</li></ul>'
     """
+
     def __init__(
         self,
         tag: str,
@@ -191,6 +191,7 @@ class VoidElement(Element):
     >>> input = VoidElement("input", id="name", attrs={"type": "text"})
     >>> input.render()  # '<input id="name" type="text" />'
     """
+
     def __init__(
         self,
         tag: str,
