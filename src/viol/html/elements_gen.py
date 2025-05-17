@@ -1,3 +1,43 @@
+"""
+HTML Elements Generator
+======================
+
+Purpose
+-------
+This script generates the elements.py file by processing the HTMLElements.csv data file.
+It creates ElementBuilder instances for all standard HTML elements with their respective
+attributes.
+
+Core Functionality
+-----------------
+- Reads HTML element definitions from HTMLElements.csv
+- Processes element attributes and global attributes
+- Generates TypedDict definitions for element attributes
+- Creates ElementBuilder instances for each HTML element
+- Writes the generated code to elements.py
+
+Dependencies
+-----------
+- pandas: For reading and processing CSV data
+- jinja2: For template rendering
+- pathlib: For file path handling
+
+Usage Examples
+-------------
+# Run this script to regenerate elements.py after updating HTMLElements.csv
+$ python -m src.viol.html.elements_gen
+
+Edge Cases
+---------
+- Special handling for 'del' element (renamed to 'del_' to avoid Python keyword conflict)
+- Special handling for MathML and SVG elements
+- Global attributes are added to all elements that include 'globals' in their attributes
+
+Version History
+--------------
+1.0.0 - Initial stable release
+"""
+
 from pathlib import Path
 
 import jinja2
