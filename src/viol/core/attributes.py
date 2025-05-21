@@ -73,7 +73,7 @@ class AttrsProperty(Generic[T]):
 
 class AttrMultiDict(MutableMapping[str, T]):
     id = AttrsProperty[str]()
-    hyperscript = AttrsProperty[str]("_")
+    hyperscript = AttrsProperty[str](name="_")
     class_ = AttrsProperty[list[str]](name="class")
     style = AttrsProperty[str]()
 
