@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from html import escape
 
 from viol.core.attributes import AttrMultiDict
@@ -30,7 +29,7 @@ class Element(Component):
         if id:
             self.attrs.id = id
         if hyperscript:
-            self.attrs._ = hyperscript
+            self.attrs.hyperscript = hyperscript
         self.events = EventHandlerList(self, events)
 
     def render(self) -> str:
