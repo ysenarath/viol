@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from src.viol.bootstrap.close_button import CloseButton
+from viol.bootstrap.close_button import CloseButton
 from viol.core import AttrMultiDict, Element, EventHandler, RenderableType
 
 
