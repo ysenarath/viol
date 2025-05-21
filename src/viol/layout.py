@@ -20,7 +20,7 @@ def init_app(
         "viol",
         __name__,
         static_folder=static_folder or fdir / "static",
-        static_url_path=static_url_path or "/__viol/static",
+        static_url_path=static_url_path or "/viol/static",
     )
     app.register_blueprint(layout)
 
@@ -42,7 +42,17 @@ class BasicLayout(Component):
 
     def render(self) -> str:
         self.ctx["title"] = self.title
-        self.ctx["extra_head_content"] = render(self.extra_head_content)
+        extra_head_content = []
+        if self.extra_head_content:
+            extra_head_content.append(self.extra_head_content)
+        if "extra_head_content" in self.ctx:
+            extra_head_content.append(self.ctx["extra_head_content"])
+        self.ctx["extra_head_content"] = render(extra_head_content)
         self.ctx["body"] = render(self.body)
-        self.ctx["extra_body_content"] = render(self.extra_body_content)
+        extra_body_content = []
+        if self.extra_body_content:
+            extra_body_content.append(self.extra_body_content)
+        if "extra_body_content" in self.ctx:
+            extra_body_content.append(self.ctx["extra_body_content"])
+        self.ctx["extra_body_content"] = render(extra_body_content)
         return self.template.render(url_for=url_for, **self.ctx)
