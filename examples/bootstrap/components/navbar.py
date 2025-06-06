@@ -28,6 +28,7 @@ def simple_navbar(
     id: str = "main-navbar",
     brand: str = "Bootstrap",
     brand_href: str = "/",
+    target: str = "#main-content",
 ) -> Navbar:
     """Create a complex Bootstrap navbar with brand and toggler."""
     return Navbar(
@@ -49,11 +50,11 @@ def simple_navbar(
                                                 "method": "get",
                                                 "rule": item["href"],
                                                 "trigger": "click",
-                                                "target": "#main-content",
+                                                "target": target,
                                             }
                                         ],
                                         id=f"navbar-link-{i}",
-                                        hyperscript=f"""on click remove .active from <#{id} a[id^="navbar-link-"]/> add .active""",
+                                        hyperscript=f'on click remove .active from <#{id} a[id^="navbar-link-"]/> add .active',
                                     )
                                 )
                                 for i, item in validate_each(items)
@@ -65,15 +66,3 @@ def simple_navbar(
         ],
         id=id,
     )
-
-
-class NavBarComponent:
-    """A class representing a Bootstrap navbar component."""
-
-    def __init__(self, items: list[dict], id: str = "main-navbar"):
-        self.items = items
-        self.id = id
-
-    def render(self) -> Navbar:
-        """Render the navbar component."""
-        return simple_navbar(self.items, self.id)

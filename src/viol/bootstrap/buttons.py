@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from viol.core import AttrMultiDict, Element, EventHandler
+from viol.core import AttrMultiDict, Element, EventHandler, RenderableType
 
 __all__ = ["Button"]
 
@@ -24,7 +24,7 @@ class Button(Element):
 
     def __init__(
         self,
-        text: str,
+        children: RenderableType,
         color: C | None = "primary",
         size: Literal["sm", "md", "lg"] | None = None,
         disabled: bool = False,
@@ -40,14 +40,14 @@ class Button(Element):
     ):
         super().__init__(
             "a" if href else tag,
-            children=text if tag != "input" else None,
+            children=children if tag != "input" else None,
             attrs=attrs,
             events=events,
             id=id,
             hyperscript=hyperscript,
         )
         if tag == "input":
-            self.attrs["value"] = text
+            self.attrs["value"] = children
         if href:
             self.attrs["href"] = href
             self.attrs["role"] = "button"

@@ -11,11 +11,11 @@ class Badge(Element):
     def __init__(
         self,
         children: RenderableType | list[RenderableType] | None = None,
+        bg_color: str = "primary",
         attrs: AttrMultiDict = None,
         events: list[EventHandler] | EventHandler | None = None,
         id: str | None = None,
         hyperscript: str | None = None,
-        bg_color: str = "primary",
     ):
         super().__init__(
             "span",
